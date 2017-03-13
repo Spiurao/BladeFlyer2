@@ -97,9 +97,9 @@ void lecture_data(char *file, donnees *p)
 void free_data(donnees *p)
 {
 	int i;
-	for(i = 0;i < p->nblieux;i++) free(p->C[i]);
-	free(p->C);
-	free(p->demande);	
+	for(i = 0;i < p->nblieux;i++) delete p->C[i];
+	delete p->C;
+	delete p->demande;	
 }
 
 
