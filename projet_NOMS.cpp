@@ -1,6 +1,7 @@
 /* NOM1 Prénom1
    NOM2 Prénom2 */
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,9 +63,9 @@ void lecture_data(char *file, donnees *p)
 
 	/* Allocation mémoire pour la demande de chaque ville, et le distancier */
 	
-	p->demande = (int *) malloc (val * sizeof(int));
-	p->C = (int **) malloc (val * sizeof(int *));
-	for(i = 0;i < val;i++) p->C[i] = (int *) malloc (val * sizeof(int));
+	p->demande = new int[val];
+	p->C = new int*[val];
+	for(i = 0;i < val;i++) p->C[i] = new int[val];
 	
 	/* Lecture de la capacité */
 	
