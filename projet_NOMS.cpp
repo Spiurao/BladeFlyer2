@@ -42,7 +42,7 @@ double crono_ms()
 typedef struct {
 	int nblieux; /* Nombre de lieux (incluant le dépôt) */
 	int capacite; /* Capacité du véhicule de livraison */
-	int *demande; /* Demande de chaque lieu (la case 0 est inutilisée car le dépôt n'a aucune demande à voir satisfaire) */
+	int *volumePointPompage; /* Demande de chaque lieu (la case 0 est inutilisée car le dépôt n'a aucune demande à voir satisfaire) */
 	int **C; /* distancier (les lignes et colonnes 0 correspondent au dépôt) */
 } donnees;
 
@@ -63,7 +63,7 @@ void lecture_data(char *file, donnees *p)
 
 	/* Allocation mémoire pour la demande de chaque ville, et le distancier */
 	
-	p->demande = new int[val];
+	p->volumePointPompage = new int[val];
 	p->C = new int*[val];
 	for(i = 0;i < val;i++) p->C[i] = new int[val];
 	
@@ -77,7 +77,7 @@ void lecture_data(char *file, donnees *p)
 	for(i = 1;i < p->nblieux;i++)
 	{
 		fscanf(fin,"%d",&val);
-		p->demande[i] = val;
+		p->volumePointPompage[i] = val;
 	}
 	
 	/* Lecture du distancier */
@@ -99,7 +99,7 @@ void free_data(donnees *p)
 	int i;
 	for(i = 0;i < p->nblieux;i++) delete p->C[i];
 	delete p->C;
-	delete p->demande;	
+	delete p->volumePointPompage;	
 }
 
 
