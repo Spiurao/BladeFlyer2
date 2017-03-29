@@ -51,10 +51,11 @@ void Regroupement::remplirRegroupement(int* tabVolume, int nblieux, int capacite
             for(int i = 1; i<=position; ++i)
             	quantiteEau += tabVolume[pile[i]];
 
-            if(quantiteEau <= capaciteVehicule){
-            	
-            	for(int i = 1; i < position; ++i)
+            if(quantiteEau <= capaciteVehicule){            	
+            	for(int i = 0; i <= position; ++i)
+                {                    
             		lieux.push_back(pile[i]);
+                }
 
             	ep = EnsemblePompage(lieux);
                 ep.trouverPermutationMin(matriceDistance);
