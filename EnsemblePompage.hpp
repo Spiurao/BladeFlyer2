@@ -1,17 +1,23 @@
 #pragma once
 
-#include <set>
+#include <vector>
+#include <utility>
+#include <algorithm>
 #include <iostream>
 
 using namespace std;
 
 class EnsemblePompage {
 	private:
-		set<int> ensemblePointsPompage;
+		vector<int> ensemblePointsPompage;
 		int distanceEnsemble;
 
 	public:
 		EnsemblePompage();
-		void ajouterPoint(int point, int distance);
-
+		EnsemblePompage(vector<int> points);
+		vector<int> getEnsemblePointsPompage();
+		int getDistanceEnsemble();
+		void ajouterPoint(int point);
+		void trouverPermutationMin(int** matriceDistance);
+		int distanceEnsemblePompage(int** matriceDistance);
 };

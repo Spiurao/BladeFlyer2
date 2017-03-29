@@ -1,6 +1,9 @@
 /* NOM1 Prénom1
    NOM2 Prénom2 */
 
+#include "EnsemblePompage.hpp"
+#include "Regroupement.hpp"
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,9 +66,9 @@ void lecture_data(char *file, donnees *p)
 
 	/* Allocation mémoire pour la demande de chaque ville, et le distancier */
 	
-	p->volumePointPompage = new int[val];
-	p->C = new int*[val];
-	for(i = 0;i < val;i++) p->C[i] = new int[val];
+	p->volumePointPompage = (int *) malloc (val * sizeof(int));
+	p->C = (int **) malloc (val * sizeof(int *));
+	for(i = 0;i < val;i++) p->C[i] = (int *) malloc (val * sizeof(int));
 	
 	/* Lecture de la capacité */
 	
@@ -97,9 +100,9 @@ void lecture_data(char *file, donnees *p)
 void free_data(donnees *p)
 {
 	int i;
-	for(i = 0;i < p->nblieux;i++) delete p->C[i];
-	delete p->C;
-	delete p->volumePointPompage;	
+	for(i = 0;i < p->nblieux;i++) free(p->C[i]);
+	free(p->C);
+	free(p->volumePointPompage);	
 }
 
 
@@ -121,14 +124,142 @@ int main(int argc, char *argv[])
 	/* .... */
 
 
+	//Déclaration du problème
+	glp_prob *prob;
+
+	//Données
+
+    Regroupement r = Regroupement();
+    r.remplirRegroupement(p.volumePointPompage, p.nblieux-1, p.capacite, p.C);
+
+    vector<EnsemblePompage> ep = r.getRegroupement();
+
+	int nbVar = ep.size()-1;
+	int nbContr = p.nblieux -1;
+
+	//ia, ja, ar
+	vector<int> ia;
+	vector<int> ja;
+	vector<double> ar;
+
+	//Variables
+	int i;
+	int j;
+	bool fini;
+	double z;
+	double x[nbVar];
 
 
+	//Tableau des noms
+	char nomVar[nbVar][10];
+	char nomContr[nbContr][13];
 
 
+	//Création du problème
+	prob = glp_create_prob();
+	glp_set_prob_name(prob, "Partionnement d'ensemble : choix des tournees");
+	glp_set_obj_dir(prob, GLP_MIN);
 
 
+	//Déclaration des contraintes
+
+	glp_add_rows(prob, nbContr);
+
+	for(i = 1; i <= nbContr; i++)
+	{
+		sprintf(nomContr[i], "Contrainte %d", i);
+
+		glp_set_row_name(prob, i, nomContr[i]);
+
+		glp_set_row_bnds(prob, i, GLP_FX, 1.0, 0.0);
+	}
 
 
+	//Déclaration des variables
+
+	glp_add_cols(prob, nbVar); //On met à suivre les variables x puis les variables y
+
+	for(i = 1; i <= nbVar; i++)
+	{
+		sprintf(nomVar[i],"x%d",i);
+
+		glp_set_col_name(prob, i , nomVar[i]);
+
+		glp_set_col_bnds(prob, i, GLP_DB, 0.0, 1.0); //Variables entre 0 et 1
+		glp_set_col_kind(prob, i, GLP_BV); //Variables binaires
+	}
+
+	//Fonction objectif
+	for(i = 1; i<= nbVar; i++)
+		glp_set_obj_coef(prob,i,ep[i-1].getDistanceEnsemble());
+
+	//Matrice creuse
+
+	//ia : le numero de la contrainte
+	//ja : le numero de la variable
+	//ar : le coefficient de la variable
+	ia.push_back(0);
+	ja.push_back(0);
+	ar.push_back(0);
+
+	//Pour chaque contrainte
+	vector <int> pointsdeau;
+	for(i=0; i<=nbVar; i++)
+	{
+	    pointsdeau = ep[i].getEnsemblePointsPompage();
+		
+		for(int j = 0; j < pointsdeau.size(); j++)
+		{
+			ia.push_back(pointsdeau[j]); //Le numero de la contrainte
+			ja.push_back(i+1); //Le numero de la variable
+			ar.push_back(1.0);
+		}	
+	}
+
+	glp_load_matrix(prob,ia.size()-1,ia.data(),ja.data(),ar.data());
+
+
+	//Pour le debug
+
+	glp_write_lp(prob,NULL,"Debug.lp");
+
+
+	//Résolution
+
+	glp_simplex(prob,NULL);
+	glp_intopt(prob,NULL);
+
+	z = glp_mip_obj_val(prob); // on récupère la solution de la fonction objectif
+
+	//On récupère les variables solutions
+	for(int i = 0; i <  nbVar; i++)
+		x[i] = glp_mip_col_val(prob,i+1);
+
+
+	//Affichage
+
+	printf("\n\nz = %lf\n",z);
+
+	for(int i = 0; i < nbVar; i++) //Affichage des x
+	{
+		if((int)(x[i] + 0.5) == 1)
+		{
+			printf("%s = %d  :  ",nomVar[i+1],(int)(x[i] + 0.5)); /* un cast est ajouté, x[i] pourrait être égal à 0.99999... */
+
+			printf("[%d", ep[i].getEnsemblePointsPompage()[0]);
+			for(int j = 1; j < ep[i].getEnsemblePointsPompage().size(); j++)
+			{
+				printf(", %d", ep[i].getEnsemblePointsPompage()[j]);
+			}
+
+			printf("] de longueur %d\n", ep[i].getDistanceEnsemble());
+		}
+	}
+
+	puts("");
+
+	//Libération de la mémoire
+	glp_delete_prob(prob);
 
 
 	/* ... */

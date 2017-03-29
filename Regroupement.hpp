@@ -9,10 +9,13 @@ using namespace std;
 class Regroupement {
 	private:
 		vector<EnsemblePompage> regroupement;
+		int distanceRegroupement;
 
 	public:
 		Regroupement();
-		void remplirRegroupement(int [] tabVolume, int capaciteVehicule);
-		int calculerDistanceMin(EnsemblePompage e);
+		vector<EnsemblePompage> getRegroupement();
+		int getDistanceRegroupement();
+		void calculerDistanceRegroupement();
+		void remplirRegroupement(int* tabVolume, int nblieux, int capaciteVehicule, int** matriceDistance);
 };
 
