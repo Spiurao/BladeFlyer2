@@ -204,17 +204,18 @@ int main(int argc, char *argv[])
 
 	//Pour chaque contrainte
 	vector <int> pointsdeau;
-	for(i=0; i<=nbVar; i++)
+	for(i=0; i<nbVar; i++)
 	{
 	    pointsdeau = ep[i].getEnsemblePointsPompage();
 		
 		for(int j = 0; j < pointsdeau.size(); j++)
-		{
+		{			
 			ia.push_back(pointsdeau[j]); //Le numero de la contrainte
-			ja.push_back(i+1); //Le numero de la variable
+			ja.push_back(i+1); //Le numero de la variable			
 			ar.push_back(1.0);
 		}	
 	}
+
 
 	glp_load_matrix(prob,ia.size()-1,ia.data(),ja.data(),ar.data());
 
@@ -239,6 +240,15 @@ int main(int argc, char *argv[])
 	//Affichage
 
 	printf("\n\nz = %lf\n",z);
+
+	for(int i =0; i<ep.size();++i){
+		for(int j = 0; j < ep[i].getEnsemblePointsPompage().size(); j++)
+			{
+				cout<<ep[i].getEnsemblePointsPompage()[j]<<" ";
+			}
+			cout<<"  dist : "<<ep[i].getDistanceEnsemble()<<endl;
+			
+	}
 
 	for(int i = 0; i < nbVar; i++) //Affichage des x
 	{
