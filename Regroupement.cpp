@@ -63,7 +63,7 @@ void Regroupement::remplirRegroupement(int* tabVolume, int nblieux, int capacite
 
             }
 
-        position = 0;
+        quantiteEau = 0;
     }
 	
 }
