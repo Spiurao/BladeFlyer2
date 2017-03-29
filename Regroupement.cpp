@@ -41,15 +41,15 @@ void Regroupement::remplirRegroupement(int* tabVolume, int nblieux, int capacite
                 ++position;
             }
             else{
-                ++pile[position-1];
+                pile[position-1]++;
                 --position;
             }
 
             if (position == 0)
                 fini = true;
 
-            for(int lieu:pile)
-            	quantiteEau += tabVolume[lieu];
+            for(int i = 1; i<=position; ++i)
+            	quantiteEau += tabVolume[pile[i]];
 
             if(quantiteEau <= capaciteVehicule){
             	
@@ -57,6 +57,7 @@ void Regroupement::remplirRegroupement(int* tabVolume, int nblieux, int capacite
             		lieux.push_back(pile[i]);
 
             	ep = EnsemblePompage(lieux);
+                ep.trouverPermutationMin(matriceDistance);
             	regroupement.push_back(ep);
             	lieux = vector<int>();
 

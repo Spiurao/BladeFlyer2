@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 	//Données
 
     Regroupement r = Regroupement();
-    r.remplirRegroupement(p.volumePointPompage, p.nblieux-1, p.capacite, p.C);
+    r.remplirRegroupement(p.volumePointPompage, p.nblieux, p.capacite, p.C);
 
     vector<EnsemblePompage> ep = r.getRegroupement();
 
