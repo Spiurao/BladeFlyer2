@@ -54,12 +54,7 @@ void Regroupement::remplirRegroupement(int* tabVolume, int nbL, int capaciteVehi
             	quantiteEau += tabVolume[pile[i]];
 
             }
-              for(int i = 1; i <= position; ++i)
-                {                    
-                    cout<<pile[i]<<" ";
-                }                             
-                cout<<"qt : "<<quantiteEau<<endl;
-           
+                         
 
             if(quantiteEau <= capaciteVehicule && position !=0){                 
             	for(int i = 1; i <= position; ++i)
