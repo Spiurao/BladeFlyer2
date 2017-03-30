@@ -47,8 +47,9 @@ int EnsemblePompage::distanceEnsemblePompage(int** matriceDistance){
 		resultat *= 2;
 	else{
 		//Parcours des distances des ensemblePointsPompage 2 à 2
-		for(int i = 1; i < ensemblePointsPompage.size(); ++i)
+		for(int i = 1; i < ensemblePointsPompage.size(); ++i){			
 			resultat += matriceDistance[ensemblePointsPompage[i-1]][ensemblePointsPompage[i]];
+		}
 
 		//Retour à la base
 		resultat += matriceDistance[ensemblePointsPompage [ensemblePointsPompage.size()-1] ]

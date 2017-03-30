@@ -23,7 +23,8 @@ void Regroupement::calculerDistanceRegroupement(){
 	distanceRegroupement = resultat;
 }
 
-void Regroupement::remplirRegroupement(int* tabVolume, int nblieux, int capaciteVehicule, int** matriceDistance){
+void Regroupement::remplirRegroupement(int* tabVolume, int nbL, int capaciteVehicule, int** matriceDistance){
+    int nblieux = nbL-1;
     int pile[nblieux+1];
     int position = 0;
     int quantiteEau = 0;
@@ -41,22 +42,25 @@ void Regroupement::remplirRegroupement(int* tabVolume, int nblieux, int capacite
                 ++position;
             }
             else{
-                pile[position-1]++;
+                ++pile[position-1];
                 --position;
             }
 
             if (position == 0)
                 fini = true;
 
-            for(int i = 1; i<=position; ++i)
+            for(int i = 1; i<=position; ++i){
+              
             	quantiteEau += tabVolume[pile[i]];
 
-            if(quantiteEau <= capaciteVehicule){            	
-            	for(int i = 0; i <= position; ++i)
+            }
+                         
+
+            if(quantiteEau <= capaciteVehicule && position !=0){                 
+            	for(int i = 1; i <= position; ++i)
                 {                    
             		lieux.push_back(pile[i]);
-                }
-
+                }                               
             	ep = EnsemblePompage(lieux);
                 ep.trouverPermutationMin(matriceDistance);
             	regroupement.push_back(ep);
